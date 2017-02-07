@@ -66,10 +66,275 @@ $(document).ready(function() {
 		count++;
 	});
 	console.log(questions);
-	printOutResults();
-	let currentTab = $( ".selector" ).tabs( "option", "active" );
+	//printOutResults();
+	tournyPost();
+	
+	let currentTab = $('#controlTabs').find('.active').text();
 	console.log(currentTab);
+	
+	
+	mtData.teams.forEach(function(district, i){
+		$('#participating-division')
+		.append(
+			$('<option>')
+			.attr({
+				'value': i
+			})
+			.text(district.division)
+		);
+		$('#division-division')
+		.append(
+			$('<option>')
+			.attr({
+				'value': i
+			})
+			.text(district.division)
+		);
+		$('#school-division')
+		.append(
+			$('<option>')
+			.attr({
+				'value': i
+			})
+			.text(district.division)
+		);
+	});
+
+	$('#division-division').change(function(){
+		$("#divisionContainer").empty();
+		let division = $('#division-division').find('option:selected').val();
+		divisionPost(division);
+	});
+	
+	$('#participating-division').change(function(){
+		$("#participatingContainer").empty();
+		let division = $('#participating-division').find('option:selected').val();
+		postParticipating(division);
+	});
+	
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		currentTab = $('#controlTabs').find('.active').text();
+		switch(currentTab) {
+			case "Tournament":
+				$('#tourneyContainer').empty();
+				console.log("Tourny");
+				tournyPost();
+				break;
+			case "Division":
+				$('#divisionContainer').empty();
+				console.log("District");
+				divisionPost($('#division-division').find('option:selected').val());
+				break;
+			case "School":
+				console.log("Schools");
+				break;
+			case "Bulk":
+				$('#bulkContainer').empty();
+				mainResult(totalCor() ,categoryOrder.reduce(toAverage, {}));
+				console.log("Bulk");
+				break;
+			case "Error":
+				$("#errorContainer").empty();
+				postError();
+				break;
+			default:
+				$("#participatingContainer").empty();
+				postParticipating($('#participating-division').find('option:selected').val());
+		};
+	});
 });
+
+function tournyPost() {
+	
+	let allScores = [];
+	results.forEach(function(current, i) {
+		allScores[i] = current.score;
+	});
+	
+	$("#tourneyContainer").append($('<center>').append($('<p>').text("*** ITEM ANALYSYS ***")));
+	$("#tourneyContainer").append($('<center>').append($('<p>').text("The average of " + results.length + " scores = " + (average(allScores)).toFixed(2) + ", the standard deviation = " + (standardDeviation(allScores)).toFixed(2) + ".\n\n")));	
+	$("#tourneyContainer").append($('<table>').addClass('table tourneyTable')
+		.append(
+			$('<thead>')
+			.append(
+				$('<tr>')
+				.append($('<th>').text('Question'))
+				.append($('<th>').text('Blanks'))
+				.append($('<th>').text('First'))
+				.append($('<th>').text('Second'))
+				.append($('<th>').text('Third'))
+				.append($('<th>').text('Fourth'))
+				.append($('<th>').text('Fifth'))
+				.append($('<th>').text('Category'))
+				.append($('<th>').text('Percent'))
+			)
+		)
+		.append(
+			$('<tbody>')
+		)
+	)
+	
+	questions.forEach(function(current, i) {
+		$("#tourneyContainer").find('table.tourneyTable tbody')
+		.append(
+			$('<tr>')
+			.append($('<td>').text(i + 1))
+			.append($('<td>').text(current.answerCounts[0]))
+			.append($('<td>').text(current.answerCounts[1]))
+			.append($('<td>').text(current.answerCounts[2]))
+			.append($('<td>').text(current.answerCounts[3]))
+			.append($('<td>').text(current.answerCounts[4]))
+			.append($('<td>').text(current.answerCounts[5]))
+			.append($('<td>').text(current.category))
+			.append($('<td>').text((current.answerCounts[current.answer] / results.length * 100).toFixed(2)))
+		)
+	})
+	return;
+};
+function divisionPost(division) {
+	
+	let ranking = [];
+	let schoolRanking = [];
+	
+	mtData.teams[division].schools.forEach(function(school, schoolNum) {
+		let schoolSRanking = [];
+		school.students.forEach(function(student, studentNum) {
+			let isPresent = false;
+			let rPos = 0;
+			results.forEach(function(resultList, rNum) {
+				if(student == resultList.name){
+					isPresent = true;
+					rPos = rNum;
+				};
+			});
+			if(isPresent == true) {
+				ranking.push({
+					name: student,
+					school: school.name,
+					score: results[rPos].score,
+				});
+				schoolSRanking.push({
+					name: student,
+					school: school.name,
+					score: results[rPos].score,
+				});
+			};
+			if(isPresent == false) {
+				ranking.push({
+					name:student,
+					school: school.name,
+					score: 0,
+				});
+				schoolSRanking.push({
+					name: student,
+					school: school.name,
+					score: results[rPos].score,
+				});
+			};
+		});
+		schoolSRanking = schoolSRanking.sort(function (a, b) {
+			return a.score - b.score;
+		});
+		schoolSRanking = schoolSRanking.reverse();
+		
+		if(schoolSRanking.length >= 4) {
+			schoolRanking.push({
+				school: school.name,
+				top4Score: (schoolSRanking[0].score + schoolSRanking[1].score + schoolSRanking[2].score + schoolSRanking[3].score)
+			})
+		}
+		else {
+			let top4Temp = 0;
+			schoolSRanking.forEach(function(current) {
+				top4Temp += current.score;
+			})
+			schoolRanking.push({
+				school: school.name,
+				top4Score: top4Temp
+			})
+		}
+
+	});
+	
+	ranking = ranking.sort(function (a, b) {
+		return a.score - b.score;
+	});
+	ranking = ranking.reverse();
+	schoolRanking = schoolRanking.sort(function (a, b) {
+		return a.score - b.score;
+	});
+	schoolRanking = schoolRanking.reverse();
+	
+	$("#divisionContainer").append($('<table>').addClass('table divisionSchoolTable')
+		.append(
+			$('<thead>')
+			.append(
+				$('<tr>')
+				.append($('<th>').text('Rank'))
+				.append($('<th>').text('School'))
+				.append($('<th>').text('Top 4 Scores'))
+			)
+		)
+		.append(
+			$('<tbody>')
+		)
+	)
+	schoolRanking.forEach(function(current, i) {
+		$("#divisionContainer").find('table.divisionSchoolTable tbody')
+		.append(
+			$('<tr>')
+			.append($('<td>').text(i + 1))
+			.append($('<td>').text(current.school))
+			.append($('<td>').text(current.top4Score))
+		)
+	})
+	
+	$("#divisionContainer").append($('<table>').addClass('table divisionTable')
+		.append(
+			$('<thead>')
+			.append(
+				$('<tr>')
+				.append($('<th>').text('Rank'))
+				.append($('<th>').text('Student'))
+				.append($('<th>').text('School'))
+				.append($('<th>').text('Score'))
+			)
+		)
+		.append(
+			$('<tbody>')
+		)
+	)
+
+	ranking.forEach(function(current, i) {
+		if(current.score > 0) {
+			$("#divisionContainer").find('table.divisionTable tbody')
+			.append(
+				$('<tr>')
+				.append($('<td>').text(i + 1))
+				.append($('<td>').text(current.name))
+				.append($('<td>').text(current.school))
+				.append($('<td>').text(current.score))
+			)
+		}
+	})
+	return;
+};
+
+function postParticipating(division) {
+	try {
+		mtData.teams[division].schools.forEach(function(school, i) {
+			school.students.forEach(function(student, j) {
+				$("#participatingContainer").append(
+					$('<p>')
+					.text(((parseInt(division, 10) + 1) * 1000) + ((i + 1) * 10) + (j + 1) + ",\t\t"+ student + ",\t\t" + school.name + "\n")
+				);
+			});
+		});
+	}
+	catch(err) {
+	}
+	return;
+};
 
 function countCorrectForCategory(category, answers) {
 	const answersForCategory = filterAnswersByCategory(category, answers);
@@ -186,7 +451,6 @@ function average(data) {
 };
 
 function postError() {
-	let errorPost = "";
 	mtData.teams.forEach(function(district, districtNum) {
 		district.schools.forEach(function(school, schoolNum) {
 			school.students.forEach(function(student, studentNum) {
@@ -197,12 +461,14 @@ function postError() {
 					};
 				});
 				if(fCount == results.length) {
-					errorPost += "WARNING: No EXAM turned in for student # " + (studentNum + 1) +" from school # " + (schoolNum + 1) + " in division # " + (districtNum + 1) + "\n";
+					$("#errorContainer").append(
+						$('<p>')
+						.text("WARNING: No EXAM turned in for student # " + (studentNum + 1) +" from school # " + (schoolNum + 1) + " in division # " + (districtNum + 1) + "\n"));
 				};
 			});
 		});
 	});
-	return errorPost;
+	return;
 };
 
 function mainResult(totalCor, catCor) {
@@ -300,12 +566,12 @@ function mainResult(totalCor, catCor) {
 	
 	let allScores = [];
 	results.forEach(function(current, i) {
-		allScores[i] = current.score * 0.1;
+		allScores[i] = current.score;
 	});
 	console.log(allScores);
 	comResult += "BREAK\nGSW Mathematics Tournament " + mtData.date + " -Georgia Southwestern State University-\n\n";
 	comResult += "*** ITEM ANALYSYS ***\n\n";
-	comResult += "The average of " + results.length + " scores = " + (average(allScores) * 10).toFixed(2) + ", the standard deviation = " + (standardDeviation(allScores)* 10).toFixed(2) + ".\n\n";
+	comResult += "The average of " + results.length + " scores = " + (average(allScores)).toFixed(2) + ", the standard deviation = " + (standardDeviation(allScores)).toFixed(2) + ".\n\n";
 	comResult += "Number of questions per category:\nALGE " + Object.keys(mtData.questions['ALGE']).length + " :	ANGE " + Object.keys(mtData.questions['ANGE']).length + " :	GEOM " + Object.keys(mtData.questions['GEOM']).length + " :	TRIG " + Object.keys(mtData.questions['TRIG']).length + " :	MISC " + Object.keys(mtData.questions['MISC']).length + " :\n\n";
 	comResult += "Question Blanks First  Second Third  Fourth Fifth  Other   Type    Percent";
 	questions.forEach(function(current, i) {
@@ -318,6 +584,7 @@ function mainResult(totalCor, catCor) {
 			comResult += count;
 		});
 	});
-	
-	return comResult;
+	console.log(comResult);
+	$('#bulkContainer').text(comResult);
+	return;
 };

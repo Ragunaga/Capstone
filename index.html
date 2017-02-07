@@ -16,31 +16,95 @@
 					<li class="active"><a data-toggle="tab" href="#tournamentTab">Tournament</a></li>
 					<li><a data-toggle="tab" href="#divisionTab">Division</a></li>
 					<li><a data-toggle="tab" href="#schoolTab">School</a></li>
-					<li><a data-toggle="tab" href="#studentTab">Student</a></li>
+					<li><a data-toggle="tab" href="#bulkTab">Bulk</a></li>
+					<li><a data-toggle="tab" href="#errorTab">Error</a></li>
+					<li><a data-toggle="tab" href="#participatingTab">Participating</a></li>
 				</ul>
 
 				<div class="tab-content">
 					<div id="tournamentTab" class="tab-pane active">
 						<div class="row">
-						<center>
-							<h3>Results by Tournament</h3>
-							<label>
-								<span>&nbsp;</span>
-								<button type="button" class="btn btn-default form-control print">
-									<span class="glyphicon glyphicon-print"></span>
-								</button>
-							</label>
-						</center>
+							<center>
+								<h3>Results by Tournament</h3>
+								<label>
+									<span>&nbsp;</span>
+									<button type="button" class="btn btn-default form-control print hidden-print">
+										<span class="glyphicon glyphicon-print"></span>
+									</button>
+								</label>
+							</center>
+						</div>
+						<div id="tourneyContainer">
 						</div>
 					</div>
 					<div id="divisionTab" class="tab-pane">
 						<h3>Results by Division</h3>
+						<div class="row selector-container hidden-print">
+							<label class="col-xs-10">
+								Division
+								<select id="division-division" class="form-control">
+								</select>
+							</label>
+							<div class="col-xs-2">
+								<label>
+									<span>&nbsp;</span>
+									<button type="button" class="btn btn-default form-control print hidden-print">
+										<span class="glyphicon glyphicon-print"></span>
+									</button>
+								</label>
+							</div>
+						</div>
+						<div id="divisionContainer">
+						</div>
 					</div>
 					<div id="schoolTab" class="tab-pane">
 						<h3>Results by School</h3>
+						<div class="row selector-container hidden-print">
+							<label class="col-xs-10">
+								Division
+								<select id="school-division" class="form-control">
+								</select>
+							</label>
+							<div class="col-xs-2">
+								<label>
+									<span>&nbsp;</span>
+									<button type="button" class="btn btn-default form-control print hidden-print">
+										<span class="glyphicon glyphicon-print"></span>
+									</button>
+								</label>
+							</div>
+						</div>
+						<div id="schoolContainer">
+						</div>
 					</div>
-					<div id="studentTab" class="tab-pane">
-						<h3>Results by Student</h3>
+					<div id="bulkTab" class="tab-pane">
+						<h3>All Results</h3>
+						<div id="bulkContainer">
+						</div>
+					</div>
+					<div id="errorTab" class="tab-pane">
+						<div id="errorContainer">
+						</div>
+					</div>
+					<div id="participatingTab" class="tab-pane">
+						<div class="row selector-container hidden-print">
+							<label class="col-xs-10">
+								Division
+								<select id="participating-division" class="form-control">
+								</select>
+							</label>
+							<div class="col-xs-2">
+								<label>
+									<span>&nbsp;</span>
+									<button type="button" class="btn btn-default form-control print hidden-print">
+										<span class="glyphicon glyphicon-print"></span>
+									</button>
+								</label>
+							</div>
+						</div>
+						<div id="participatingContainer">
+
+						</div>
 					</div>
 				</div>
 
