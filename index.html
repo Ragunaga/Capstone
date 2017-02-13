@@ -1,15 +1,21 @@
 <html>
 	<head>
-		<Script src="mt17.js"></script>
+		<title>GSW Math Tournament</title>
+		<Script src="data.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script src="process.js"></script>
+		<style>
+			td.correctAnswer {
+				color: blue;
+			}
+		</style>
 	</head>
-	<body>
+	<body style="width: 80vw; margin: 0 auto;">
 		<div class="container-fluid">
 			<div class="row">
-				<h1> Results </h1>
+				<h1 class="hidden-print"> Results </h1>
 			</div>
 			<div class="row">
 				<ul id="controlTabs" class="nav nav-tabs hidden-print">
@@ -18,7 +24,6 @@
 					<li><a data-toggle="tab" href="#schoolTab">School</a></li>
 					<li><a data-toggle="tab" href="#bulkTab">Bulk</a></li>
 					<li><a data-toggle="tab" href="#errorTab">Error</a></li>
-					<li><a data-toggle="tab" href="#participatingTab">Participating</a></li>
 				</ul>
 
 				<div class="tab-content">
@@ -28,7 +33,7 @@
 								<h3>Results by Tournament</h3>
 								<label>
 									<span>&nbsp;</span>
-									<button type="button" class="btn btn-default form-control print hidden-print">
+									<button type="button" onclick="window.print()" class="btn btn-default form-control print hidden-print">
 										<span class="glyphicon glyphicon-print"></span>
 									</button>
 								</label>
@@ -38,7 +43,9 @@
 						</div>
 					</div>
 					<div id="divisionTab" class="tab-pane">
-						<h3>Results by Division</h3>
+						<center>
+							<h3>Results by Division</h3>
+						</center>
 						<div class="row selector-container hidden-print">
 							<label class="col-xs-10">
 								Division
@@ -48,7 +55,7 @@
 							<div class="col-xs-2">
 								<label>
 									<span>&nbsp;</span>
-									<button type="button" class="btn btn-default form-control print hidden-print">
+									<button type="button" onclick="window.print()" class="btn btn-default form-control print hidden-print">
 										<span class="glyphicon glyphicon-print"></span>
 									</button>
 								</label>
@@ -58,17 +65,24 @@
 						</div>
 					</div>
 					<div id="schoolTab" class="tab-pane">
-						<h3>Results by School</h3>
+						<center>
+							<h3>Results by School</h3>
+						</center>
 						<div class="row selector-container hidden-print">
-							<label class="col-xs-10">
+							<label class="col-xs-5">
 								Division
 								<select id="school-division" class="form-control">
+								</select>
+							</label>
+							<label class="col-xs-5">
+								School
+								<select id="school-school" class="form-control">
 								</select>
 							</label>
 							<div class="col-xs-2">
 								<label>
 									<span>&nbsp;</span>
-									<button type="button" class="btn btn-default form-control print hidden-print">
+									<button type="button" onclick="window.print()" class="btn btn-default form-control print hidden-print">
 										<span class="glyphicon glyphicon-print"></span>
 									</button>
 								</label>
@@ -78,32 +92,39 @@
 						</div>
 					</div>
 					<div id="bulkTab" class="tab-pane">
-						<h3>All Results</h3>
-						<div id="bulkContainer">
+						<div class="row selector-container hidden-print">
+							<div class="col-xs-4">
+								<label>
+									<span>&nbsp;</span>
+									<button type="button" onclick="bulkDivision()" class="btn btn-default form-control hidden-print">
+										Print Divisions
+									</button>
+								</label>
+							</div>
+							<div class="col-xs-4">
+								<label>
+									<span>&nbsp;</span>
+									<button type="button" onclick="bulkSchool()" class="btn btn-default form-control hidden-print">
+										Print Schools
+									</button>
+								</label>
+							</div>
+							<div class="col-xs-4">
+								<label>
+									<span>&nbsp;</span>
+									<a id="downloadButton" href="#" role="button" type="button" onclick="bulkParticipating()" class="btn btn-default form-control hidden-print">
+										Download Labels (CSV)
+									</a>
+								</label>
+							</div>
+						</div>
+						<div id="bulkSchoolContainer" class="visible-print-block">
+						</div>
+						<div id="bulkDivisionContainer" class="visible-print-block">
 						</div>
 					</div>
 					<div id="errorTab" class="tab-pane">
 						<div id="errorContainer">
-						</div>
-					</div>
-					<div id="participatingTab" class="tab-pane">
-						<div class="row selector-container hidden-print">
-							<label class="col-xs-10">
-								Division
-								<select id="participating-division" class="form-control">
-								</select>
-							</label>
-							<div class="col-xs-2">
-								<label>
-									<span>&nbsp;</span>
-									<button type="button" class="btn btn-default form-control print hidden-print">
-										<span class="glyphicon glyphicon-print"></span>
-									</button>
-								</label>
-							</div>
-						</div>
-						<div id="participatingContainer">
-
 						</div>
 					</div>
 				</div>
