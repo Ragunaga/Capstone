@@ -1,6 +1,3 @@
-console.log("HELLO");
-console.log(mtData);
-
 let questions = [];
 let results = [];
 const categoryOrder = Object.keys(mtData.questions);
@@ -71,10 +68,13 @@ $(document).ready(function() {
 			getTeamScores(districtNum, schoolNum);
 		});
 	});
+	
+	//Pre-emptively creates first result tab.
 	tournyPost();
 	
 	let currentTab = $('#controlTabs').find('.active').text();	
 	
+	//Fills drops downs
 	mtData.teams.forEach(function(district, i){
 		$('#division-division')
 		.append(
@@ -104,6 +104,7 @@ $(document).ready(function() {
 		);
 	});
 	
+	//Change handlers
 	$('#division-division').change(function(){
 		$("#divisionContainer").empty();
 		let division = $('#division-division').find('option:selected').val();
@@ -135,6 +136,7 @@ $(document).ready(function() {
 		schoolPost(division, school, $("#schoolContainer"));
 	});
 	
+	//Tab toggle
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 		currentTab = $('#controlTabs').find('.active').text();
 		switch(currentTab) {
@@ -166,6 +168,7 @@ $(document).ready(function() {
 	});
 });
 
+//Tournament-wide results
 function tournyPost() {
 	
 	let allScores = [];
@@ -221,6 +224,8 @@ function tournyPost() {
 	});
 	return;
 };
+
+//Per division results
 function divisionPost(division, container) {
 	
 	let ranking = [];
@@ -367,6 +372,7 @@ function divisionPost(division, container) {
 	return;
 };
 
+//School results
 function schoolPost(division, school, container) {
 	container
 		.append($('<p>').text(' '))
@@ -466,6 +472,7 @@ function schoolPost(division, school, container) {
 	});
 };
 
+//Labels
 function postParticipating(division, partString) {
 	try {
 		mtData.teams[division].schools.forEach(function(school, i) {
@@ -479,6 +486,7 @@ function postParticipating(division, partString) {
 	return partString;
 };
 
+//Correct counts
 function countCorrectForCategory(category, answers) {
 	const answersForCategory = filterAnswersByCategory(category, answers);
 	return countAnswersByIsCorrect(true, answersForCategory);
@@ -508,6 +516,7 @@ function countAnswersByIsCorrect(isCorrect, answers) {
 	return temp;
 };
 
+//Sets the scores
 function getTeamScores(districtNum, schoolNum) {
 	let scoreArray = [];
 	let iPCount = 0;
@@ -542,6 +551,7 @@ function getTeamScores(districtNum, schoolNum) {
 	return [largest, scoreArray];
 };
 
+//Sort function
 function sortArray(scoreByPattern){
     scoreByPattern.sort(function(a,b) {
         if (a < b) { return 1; }
@@ -584,9 +594,6 @@ function average(data) {
 	let sum = data.reduce(function(sum, value) {
 		return sum + value;
 	}, 0);
-	console.log(sum)
-	console.log(data.length)
-	console.log(sum / data.length)
 	return sum / data.length;
 };
 
@@ -611,6 +618,8 @@ function postError() {
 	return;
 };
 
+
+//Bulk print/download options
 function bulkSchool() {
 	$('#bulkSchoolContainer').empty();
 	$('#bulkDivisionContainer').empty();
