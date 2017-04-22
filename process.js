@@ -161,20 +161,82 @@ $(document).ready(function() {
 				$("#errorContainer").empty();
 				postError();
 				break;
+			case "Search":
+				$("#searchContainer").empty();
+				break;
 			default:
 				$("#participatingContainer").empty();
 				postParticipating($('#participating-division').find('option:selected').val());
 		};
 	});
+	
+	let availableTags = [];
+	mtData.teams.forEach(function(curDiv) {
+		curDiv.schools.forEach(function(curSchool) {
+			availableTags.push(curSchool.name);
+			curSchool.students.forEach(function(curStu) {
+				availableTags.push(curStu);
+			});
+		});
+	});
+	$("#tags").autocomplete({
+		source: availableTags
+	});
 });
+
+function searchPost(e) {
+	if(e.keyCode == 13) {
+		$("#searchContainer").empty();
+		let divisionNumber = 0;
+		let schoolNumber = 0;
+		let isFound = false;
+		
+		mtData.teams.forEach(function(curDiv, divisionNum) {
+			
+			if(isFound) {
+				return;
+			};
+			
+			curDiv.schools.forEach(function(curSchool, schoolNum) {
+				
+				if(isFound) {
+					return;
+				};
+				
+				if(curSchool.name == tags.value) {
+					
+					schoolNumber = schoolNum;
+					divisionNumber = divisionNum;
+					return;
+					
+				};
+				
+				curSchool.students.forEach(function(curStu) {
+					
+					if(curStu == tags.value) {
+						
+						schoolNumber = schoolNum;
+						divisionNumber = divisionNum;
+						return;
+						
+					};
+					
+				});
+				
+			});
+			
+		});
+		
+		schoolPost(divisionNumber, schoolNumber, $("#searchContainer"));
+		
+	};
+};
 
 //Tournament-wide results
 function tournyPost() {
 	
 	let allScores = [];
 	results.forEach(function(current, i) {
-		console.log(current.score);
-		console.log(parseInt(current.score, 10));
 		allScores[i] = parseInt(current.score, 10);
 	});
 	

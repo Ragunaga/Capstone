@@ -3,8 +3,10 @@
 		<title>GSW Math Tournament</title>
 		<Script src="data.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script src="process.js"></script>
 		<style>
 			td.correctAnswer {
@@ -24,6 +26,7 @@
 					<li><a data-toggle="tab" href="#schoolTab">School</a></li>
 					<li><a data-toggle="tab" href="#bulkTab">Bulk</a></li>
 					<li><a data-toggle="tab" href="#errorTab">Error</a></li>
+					<li><a data-toggle="tab" href="#searchTab">Search</a></li>
 				</ul>
 
 				<div class="tab-content">
@@ -125,6 +128,24 @@
 					</div>
 					<div id="errorTab" class="tab-pane">
 						<div id="errorContainer">
+						</div>
+					</div>
+					<div id="searchTab" class="tab-pane active">
+						<div class="row">
+							<center>
+								<div class="ui-widget hidden-print col-xs-10" style="padding-top: 2.5vh; display: inline-block">
+									<label for="tags">Search: </label>
+									<input style="width: 50vw" id="tags" onkeypress="searchPost(event)">
+								</div>
+								<label class = "col-xs-2">
+									<span>&nbsp;</span>
+									<button type="button" onclick="window.print()" class="btn btn-default form-control print hidden-print">
+										<span class="glyphicon glyphicon-print"></span>
+									</button>
+								</label>
+							</center>
+						</div>
+						<div id="searchContainer">
 						</div>
 					</div>
 				</div>
